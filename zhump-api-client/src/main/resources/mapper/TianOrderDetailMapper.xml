@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.com.tianzmp.dao.TianOrderDetailDao" >
+  <resultMap id="BaseResultMap" type="org.com.tianzmp.vo.TianOrderDetailVO" >
+  	<id column="id" property="id" jdbcType="BIGINT" />
+    <result column="order_id" property="orderId" jdbcType="BIGINT" />
+    <result column="goods_id" property="goodsId" jdbcType="BIGINT" />
+	<result column="total_price" property="totalPrice" jdbcType="DECIMAL" />
+	<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+	  <association property="tianGoodsVO" javaType="org.com.tianzmp.vo.TianGoodsVO">
+		  <result column="name" property="name" jdbcType="VARCHAR"/>
+		  <result column="price" property="price" jdbcType="DECIMAL"/>
+		  <result column="picture" property="picture" jdbcType="VARCHAR"/>
+		  <result column="inventory" property="inventory" jdbcType="INTEGER"/>
+	  </association>
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id,order_id,goods_id,total_price,create_time,update_time
+  </sql>
+  
+  <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+  	select 
+  		<include refid="Base_Column_List"/>
+  	from
+	  tian_order_detail
+  	where
+  		id = #{id}
+  </select>
+
+  <!-- 添加单条记录 -->
+	<insert id="insert" parameterType="org.com.tianzmp.dto.TianCategoryDTO" useGeneratedKeys="true" keyProperty="id">
+		insert into tian_order_detail
+		
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="orderId != null" >
+				order_id,
+		    </if>
+		    <if test="goodsId != null" >
+				goods_id,
+		    </if>
+		    <if test="totalPrice != null" >
+				total_price
+		    </if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+		    <if test="orderId != null" >
+		        #{orderId},
+		    </if>
+		     <if test="goodsId != null" >
+		       #{goodsId},
+		    </if>
+		    <if test="totalPrice != null" >
+		        #{totalPrice}
+		    </if>
+	    </trim>
+	</insert>
+	
+	<!-- 修改 -->
+	<update id="update"	parameterType="org.com.tianzmp.dto.TianCategoryDTO">
+		update tian_order_detail
+		<set>
+			<if test="orderId != null">
+				order_id = #{orderId},
+			</if>
+			<if test="goodsId != null" >
+				goods_id =  #{goodsId},
+		    </if>
+		    <if test="totalPrice != null" >
+				total_price = #{totalPrice}
+		    </if>
+		</set>
+		where  id = #{id}
+	</update>
+  
+  <select id="selectAll"  resultMap="BaseResultMap" parameterType="org.com.tianzmp.dto.TianOrderDetailDTO">
+
+	  select
+		   a.id,
+		   a.order_id,
+		   a.goods_id,
+		   a.total_price,
+		   a.create_time,
+		   a.update_time,
+		   b.name,
+		   b.price,
+		   b.picture,
+		   b.inventory
+	  from tian_order_detail as a  left JOIN tian_goods as b ON a.goods_id =  b.id
+	  where 1 = 1
+	  	<if test="orderId">
+			and a.order_id = #{orderId}
+		</if>
+	</select>
+</mapper>
