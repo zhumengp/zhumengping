@@ -37,12 +37,6 @@
 			<if test="goodsNum != null">
 				goods_num,
 			</if>
-			<if test="createTime != null">
-				create_time,
-			</if>
-			<if test="updateTime != null">
-				update_time
-			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="id != null">
@@ -71,13 +65,7 @@
 				goods_id = #{goodsId},
 			</if>
 			<if test="goodsNum != null">
-				goods_num = #{goodsNum},
-			</if>
-			<if test="createTime != null">
-				create_time = #{createTime},
-			</if>
-			<if test="update_time != null">
-				update_time = #{updateTime}
+				goods_num = #{goodsNum}
 			</if>
 		</set>
 		where 1=1 and id = #{id}
@@ -88,16 +76,6 @@
 		select count(1) from zhump_cart left join zhump_goods on zhump_cart.goods_id = tian_goods.id where 1 = 1
 		<if test="user_id != null and user_id">
 			and zhump_cart.user_id = #{user_id}
-		</if>
-	</select>
-	<!--查询所有数据  -->
-	<select id="selectAll" resultMap="BaseResultMap" parameterType="org.com.tianzmp.dto.ZhumpCartDTO">
-		select
-			<include refid="Base_Column_List"/>
-		from zhump_cart
-		WHERE 1=1
-		<if test="goodsId != null and goodsId">
-			and zhump_cart.goods_id = #{goodsId}
 		</if>
 	</select>
 	<!-- 购物车列表查询 -->
@@ -122,5 +100,13 @@
 				goods_id = #{goodsId}
 			</if>
 		</where>
+	</select>
+
+	<update id="updateCartGoodsNum" parameterType="org.com.tianzmp.dto.ZhumpCartDTO" >
+		update zhump_cart set goods_num = goods_num + #{goodsNum} where goods_id = #{goodsId}
+	</update>
+
+	<select id="findByGoodsId" parameterType="map" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List"/> from zhump_cart where goods_id = #{goodsId} and user_id = #{userId}
 	</select>
 </mapper>

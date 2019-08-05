@@ -81,6 +81,7 @@ public class ZhumpOrderController {
       try {
           ZhumpOrderVO tianOrderVO = tianOrderService.findById(id);
           if (tianOrderVO.getUserId().longValue() != userId.intValue()){
+              log.error("【订单详情】：发现查询订单的用户信息不匹配");
               return new Result(ResultStatus.FALI,"用户id不匹配");
           }
           ResponseOrderDetail responseOrderDetail = new ResponseOrderDetail();
@@ -95,7 +96,7 @@ public class ZhumpOrderController {
                   responseOrderDetail_item.setPrice(tianOrderDetailVO.getTianGoodsVO().getPrice());
                   responseOrderDetail_item.setGoodsId(tianOrderDetailVO.getGoodsId());
                   responseOrderDetail_item.setTotalPrice(tianOrderDetailVO.getTotalPrice());
-                  ZhumpCartVO byGoodsId = tianCartService.findByGoodsId(tianOrderDetailVO.getGoodsId());
+                  ZhumpCartVO byGoodsId = tianCartService.findByGoodsId(tianOrderDetailVO.getGoodsId(),userId);
                   responseOrderDetail_item.setBuyGoodsNum(byGoodsId.getGoodsNum());
                   list.add(responseOrderDetail_item);
               }
@@ -139,7 +140,7 @@ public class ZhumpOrderController {
                         responseOrderDetail_item.setPrice(zhumpOrderDetailVO.getTianGoodsVO().getPrice());
                         responseOrderDetail_item.setGoodsId(zhumpOrderDetailVO.getGoodsId());
                         responseOrderDetail_item.setTotalPrice(zhumpOrderDetailVO.getTotalPrice());
-                        ZhumpCartVO byGoodsId = tianCartService.findByGoodsId(zhumpOrderDetailVO.getGoodsId());
+                        ZhumpCartVO byGoodsId = tianCartService.findByGoodsId(zhumpOrderDetailVO.getGoodsId(),userId);
                         responseOrderDetail_item.setBuyGoodsNum(byGoodsId.getGoodsNum());
                         responseOrderDetail_items.add(responseOrderDetail_item);
                         responseOrderDetail.setOrderDetail(responseOrderDetail_items);

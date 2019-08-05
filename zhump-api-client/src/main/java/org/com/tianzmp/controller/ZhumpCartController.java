@@ -39,6 +39,9 @@ public class ZhumpCartController {
 	@RequestMapping(value="/insert")
 	@ResponseBody
 	public Object insert(Long user_id,Long goodsId,Integer goodsNum) {
+		if (user_id == null || goodsId == null || goodsNum == null){
+			return new Result(ResultStatus.PARMSERROR,null);
+		}
 		try {
 			boolean addCart = tianCartService.save(user_id,goodsId, goodsNum);
 			if(addCart) {

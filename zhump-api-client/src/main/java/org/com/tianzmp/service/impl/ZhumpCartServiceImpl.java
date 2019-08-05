@@ -16,6 +16,8 @@ import org.com.tianzmp.service.ZhumpCartService;
 import org.com.tianzmp.service.ZhumpGoodsService;
 import org.com.tianzmp.util.JsonMapper;
 import org.com.tianzmp.vo.ZhumpCartVO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,8 @@ import com.alibaba.dubbo.common.utils.StringUtils;
 
 @Service("tianCartService")
 public class ZhumpCartServiceImpl implements ZhumpCartService {
+
+	private final Logger log = LoggerFactory.getLogger(ZhumpCartServiceImpl.class);
 
 	@Autowired
 	private ZhumpCartDao tianCartDao;
@@ -36,30 +40,32 @@ public class ZhumpCartServiceImpl implements ZhumpCartService {
 	
 	
 	@Override
-	public boolean save(Long user_id,Long goodsId, Integer num) throws Exception{
-		ZhumpCartDTO zhumpCartDTO = new ZhumpCartDTO();
-		zhumpCartDTO.setGoodsId(goodsId);
-		Integer result = 0;
-		List<ZhumpCartVO> list = tianCartDao.selectAll(zhumpCartDTO);
-		if(CollectionUtils.isNotEmpty(list)) {
-			ZhumpCartVO tianCartVO = list.get(0);
-			Integer goodsNum = tianCartVO.getGoodsNum() + num;
-			ZhumpCartDTO tianCartDTO1 = new ZhumpCartDTO();
-			tianCartDTO1.setId(tianCartVO.getId());
-			tianCartDTO1.setGoodsNum(goodsNum);
-			result = tianCartDao.update(tianCartDTO1);
+	public boolean save(Long user_id,Long goodsId, Integer goodsNum) throws Exception{
+		ZhumpCartVO zhumpCartVO = this.findByGoodsId(goodsId,user_id);
+		if(zhumpCartVO != null) {
+			ZhumpCartDTO zhumpCartDTO = new ZhumpCartDTO();
+			zhumpCartDTO.setGoodsId(goodsId);
+			zhumpCartDTO.setGoodsNum(goodsNum);
+			Integer result = tianCartDao.updateCartGoodsNum(zhumpCartDTO);
+			if (result < 0){
+				log.error("【购物车处理】:修改购物车商品数量失败");
+				return false;
+			}
 		//如果不存在，直接新增	
 		}else {
 			ZhumpCartDTO tianCartDTO2 = new ZhumpCartDTO();
 			tianCartDTO2.setGoodsId(goodsId);
-			tianCartDTO2.setGoodsNum(num);
+			tianCartDTO2.setGoodsNum(goodsNum);
 			tianCartDTO2.setUserId(user_id);
-			result = tianCartDao.insert(tianCartDTO2);
-		}
-		if(result > 0 ) {
+			Integer result = tianCartDao.insert(tianCartDTO2);
+			if(result < 0 ) {
+				log.error("【购物车处理】:加入购物车失败");
+				return false;
+			}
 			redisUtils.delRedis(Constant.redisEnumKey.USER_CART.getKey()+user_id);
+			return true;
 		}
-		return result > 0 ? true : false;
+		return true;
 	}
 
 
@@ -79,10 +85,11 @@ public class ZhumpCartServiceImpl implements ZhumpCartService {
 	}
 
 	@Override
-	public ZhumpCartVO findByGoodsId(Long goodsId) {
+	public ZhumpCartVO findByGoodsId(Long goodsId,Long userId) {
 		Map<String,Object> map = new HashMap<String, Object>();
 		map.put("goodsId",goodsId);
-		ZhumpCartVO tianCartVO = tianCartDao.findById(map);
+		map.put("userId",userId);
+		ZhumpCartVO tianCartVO = tianCartDao.findByGoodsId(map);
 		return tianCartVO;
 	}
 

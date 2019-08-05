@@ -60,11 +60,7 @@ public class ZhumpOrderServiceImpl implements ZhumpOrderService {
                 throw new BusinessException("没有添加此商品");
             }
             ZhumpGoodsVO tianGoodsVO = tianGoodsService.findById(tianCartVO.getGoodsId());
-            if (tianGoodsVO == null){
-                log.error("【订单处理】：商品库存没有此商品");
-                throw new BusinessException("商品库没有此商品");
-            }
-            if (tianGoodsVO.getInventory().intValue() == 0 || tianGoodsVO.getInventory() == null){
+            if (tianGoodsVO == null || tianGoodsVO.getInventory().intValue() == 0 || tianGoodsVO.getInventory() == null){
                 log.error("【订单处理】：该商品库存已被抢光");
                 throw new BusinessException("该商品库存为0");
             }
@@ -83,14 +79,14 @@ public class ZhumpOrderServiceImpl implements ZhumpOrderService {
         }
         //订单明细入库
         for (Long cartId : cartIds){
-            ZhumpOrderDetailDTO tianOrderDetailDTO = new ZhumpOrderDetailDTO();
-            ZhumpCartVO tianCartVO = tianCartService.findById(cartId);
-            ZhumpGoodsVO tianGoodsVO = tianGoodsService.findById(tianCartVO.getGoodsId());
-            BigDecimal total_price = new BigDecimal(tianCartVO.getGoodsNum()).multiply(tianGoodsVO.getPrice());
-            tianOrderDetailDTO.setGoodsId(tianCartVO.getGoodsId());
-            tianOrderDetailDTO.setOrderId(id);
-            tianOrderDetailDTO.setTotalPrice(total_price);
-            Integer insert = tianOrderDetailDao.insert(tianOrderDetailDTO);
+            ZhumpOrderDetailDTO zhumpOrderDetailDTO = new ZhumpOrderDetailDTO();
+            ZhumpCartVO zhumpCartVO = tianCartService.findById(cartId);
+            ZhumpGoodsVO tianGoodsVO = tianGoodsService.findById(zhumpCartVO.getGoodsId());
+            BigDecimal total_price = new BigDecimal(zhumpCartVO.getGoodsNum()).multiply(tianGoodsVO.getPrice());
+            zhumpOrderDetailDTO.setGoodsId(zhumpCartVO.getGoodsId());
+            zhumpOrderDetailDTO.setOrderId(id);
+            zhumpOrderDetailDTO.setTotalPrice(total_price);
+            Integer insert = tianOrderDetailDao.insert(zhumpOrderDetailDTO);
             if (insert < 0){
                 log.error("【订单处理】：订单明细表入库失败");
                 throw new BusinessException("订单明细表入库失败");
@@ -108,10 +104,10 @@ public class ZhumpOrderServiceImpl implements ZhumpOrderService {
     /**用户成功取消订单*/
     @Override
     public boolean cancelOrder(Long id) {
-        ZhumpOrderDTO tianOrderDTO = new ZhumpOrderDTO();
-        tianOrderDTO.setId(id);
-        tianOrderDTO.setStatus(OrderEnum.MANUAL_CANCEL_ORDER.getStatus());
-        Integer result = tianOrderDao.update(tianOrderDTO);
+        ZhumpOrderDTO zhumpOrderDTO = new ZhumpOrderDTO();
+        zhumpOrderDTO.setId(id);
+        zhumpOrderDTO.setStatus(OrderEnum.MANUAL_CANCEL_ORDER.getStatus());
+        Integer result = tianOrderDao.update(zhumpOrderDTO);
         if (result < 0){
             log.error("【订单处理】:取消订单失败");
             return false;
@@ -127,7 +123,7 @@ public class ZhumpOrderServiceImpl implements ZhumpOrderService {
             log.error("【订单处理】:删除订单失败");
             return false;
         }
-        log.info("【订单处理】:用户成功取消订单,订单主键为："+id);
+        log.info("【订单处理】:用户成功删除订单,订单主键为："+id);
         return true;
     }
 }

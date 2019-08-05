@@ -13,7 +13,7 @@ public interface ZhumpCartService {
 	/**购物车列表*/
 	List<ZhumpCartVO> pageInfoDTO(ZhumpCartDTO tianCartDTO);
 
-	ZhumpCartVO findByGoodsId(Long goodsId);
+	ZhumpCartVO findByGoodsId(Long goodsId,Long userId);
 
 	ZhumpCartVO findById(Long id);
 
