@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.com.tianzmp.dao.ZhumpCategoryDao" >
+  <resultMap id="BaseResultMap" type="org.com.tianzmp.vo.ZhumpCategoryVO" >
+  	<id column="id" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="p_id" property="pId" jdbcType="BIGINT" />
+    <result column="status" property="status" jdbcType="INTEGER" /> 
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id,name,p_id,status,create_time,update_time
+  </sql>
+  
+  <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+  	select 
+  		<include refid="Base_Column_List"/>
+  	from
+  		zhump_category
+  	where
+  		id = #{id}
+  </select>
+
+  <!-- 添加单条记录 -->
+	<insert id="insert" parameterType="org.com.tianzmp.dto.ZhumpCategoryDTO" useGeneratedKeys="true" keyProperty="id">
+		insert into zhump_category
+		
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="name != null" >
+		        name
+		    </if>
+		    <if test="pId != null" >
+		        p_id,
+		    </if>
+		    <if test="status != null" >
+		        status
+		    </if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+		    <if test="name != null" >
+		        #{name}
+		    </if>
+		     <if test="pId != null" >
+		       #{pId},
+		    </if>
+		    <if test="status != null" >
+		        #{status}
+		    </if>
+	    </trim>
+	</insert>
+	
+	<!-- 修改 -->
+	<update id="update"	parameterType="org.com.tianzmp.dto.ZhumpCategoryDTO">
+		update zhump_category
+		<set>
+			<if test="name != null">
+				name = #{name},
+			</if>
+			<if test="pId != null" >
+		       p_id =  #{pId},
+		    </if>
+		    <if test="status != null" >
+		        status = #{status}
+		    </if>
+		</set>
+		where 1=1 and id = #{id}
+	</update>
+  
+  <select id="selectAll" parameterType="org.com.tianzmp.dto.ZhumpCategoryDTO" resultMap="BaseResultMap">
+		select 
+		<include refid="Base_Column_List"/>
+		from
+		zhump_category
+		 where 1 = 1
+		 <if test="pId != null">
+		 	and p_id = #{pId}
+		 </if>
+	</select>
+</mapper>

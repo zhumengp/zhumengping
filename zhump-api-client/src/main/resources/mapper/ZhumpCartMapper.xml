@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.com.tianzmp.dao.ZhumpCartDao">
+	<resultMap id="BaseResultMap"	type="org.com.tianzmp.vo.ZhumpCartVO">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="goods_id" property="goodsId"	jdbcType="VARCHAR" />
+		<result column="goods_num" property="goodsNum"	jdbcType="INTEGER" />
+		<result column="create_time" property="createTime"	jdbcType="TIMESTAMP" />
+		<result column="update_time" property="updateTime"	jdbcType="TIMESTAMP" />
+		<!-- 关联查询商品 -->
+		<association property="tianGoodsVO" javaType = "org.com.tianzmp.vo.ZhumpGoodsVO">
+			<id column="id" property="id" jdbcType="BIGINT" />
+			<result column="name" property="name" jdbcType="VARCHAR" />
+		    <result column="price" property="price" jdbcType="DECIMAL" />
+		    <result column="picture" property="picture" jdbcType="VARCHAR" />
+		    <result column="inventory" property="inventory" jdbcType="VARCHAR" />
+		    <result column="create_time" property="createTime"	jdbcType="TIMESTAMP" />
+			<result column="update_time" property="updateTime"	jdbcType="TIMESTAMP" />
+		    
+		</association>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id,user_id, goods_id,goods_num,create_time,update_time
+	</sql>
+	<!-- 添加单条记录 -->
+	<insert id="insert" parameterType="org.com.tianzmp.dto.ZhumpCartDTO" useGeneratedKeys="true" keyProperty="id">
+		insert into zhump_cart
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userId != null">
+				user_id,
+			</if>
+			<if test="goodsId != null">
+				goods_id,
+			</if>
+			<if test="goodsNum != null">
+				goods_num,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="updateTime != null">
+				update_time
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id},
+			</if>
+			<if test="userId != null">
+				#{userId},
+			</if>
+			<if test="goodsId != null">
+				#{goodsId},
+			</if>
+			<if test="goodsNum != null">
+				#{goodsNum}
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 修改 -->
+	<update id="update"	parameterType="org.com.tianzmp.dto.ZhumpCartDTO">
+		update zhump_cart
+		<set>
+			<if test="userId != null">
+				user_id = #{userId},
+			</if>
+			<if test="goodsId != null">
+				goods_id = #{goodsId},
+			</if>
+			<if test="goodsNum != null">
+				goods_num = #{goodsNum},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime},
+			</if>
+			<if test="update_time != null">
+				update_time = #{updateTime}
+			</if>
+		</set>
+		where 1=1 and id = #{id}
+	</update>
+	
+	<!-- 查询Count数 -->
+	<select id="count" parameterType="org.com.tianzmp.dto.ZhumpCartDTO" resultType="java.lang.Integer">
+		select count(1) from zhump_cart left join zhump_goods on zhump_cart.goods_id = tian_goods.id where 1 = 1
+		<if test="user_id != null and user_id">
+			and zhump_cart.user_id = #{user_id}
+		</if>
+	</select>
+	<!--查询所有数据  -->
+	<select id="selectAll" resultMap="BaseResultMap" parameterType="org.com.tianzmp.dto.ZhumpCartDTO">
+		select
+			<include refid="Base_Column_List"/>
+		from zhump_cart
+		WHERE 1=1
+		<if test="goodsId != null and goodsId">
+			and zhump_cart.goods_id = #{goodsId}
+		</if>
+	</select>
+	<!-- 购物车列表查询 -->
+	<select id="pageInfoDTO" resultMap="BaseResultMap" parameterType="org.com.tianzmp.dto.ZhumpCartDTO">
+		select tian_cart.*,tian_goods.* from zhump_cart left join tian_goods on zhump_cart.goods_id = tian_goods.id
+		where 1 = 1
+		<if test="userId != null and userId != ''">
+			and tian_cart.user_id = #{userId}
+		</if>
+		 limit #{start}, #{rows}
+	</select>
+
+	<select id="findById" parameterType="map" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List"/>
+		from tian_cart
+		<where>
+			<if test="id != null">
+				id = #{id}
+			</if>
+			<if test="goodsId != null">
+				goods_id = #{goodsId}
+			</if>
+		</where>
+	</select>
+</mapper>

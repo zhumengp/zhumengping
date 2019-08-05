@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.com.tianzmp.dao.ZhumpGoodsDao" >
+  <resultMap id="BaseResultMap" type="org.com.tianzmp.vo.ZhumpGoodsVO" >
+  	<id column="id" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="price" property="price" jdbcType="DECIMAL" />
+    <result column="picture" property="picture" jdbcType="VARCHAR" />
+    <result column="inventory" property="inventory" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  	<sql id="Base_Column_List" >
+    	id,name, price,picture,inventory,create_time,update_time
+  	</sql>
+ 	<!-- 查询单条数据 -->
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select 
+			<include refid="Base_Column_List"/>
+		from
+			zhump_goods
+		where
+			id = #{id}
+	</select>
+  
+  	<!-- 添加单条记录 -->
+	<insert id="insert" parameterType="org.com.tianzmp.dto.ZhumpGoodsDTO" useGeneratedKeys="true" keyProperty="id">
+		insert into zhump_goods
+		
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="name != null" >
+		        name,
+		    </if>
+		    <if test="price != null" >
+		        price,
+		    </if>
+		    <if test="picture != null" >
+		        picture,
+		    </if>
+		    <if test="inventory != null" >
+		        inventory
+		    </if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+		    
+		     <if test="id != null" >
+		        #{id},
+		    </if>
+		    <if test="name != null" >
+		        #{name},
+		    </if>
+		    <if test="price != null" >
+		        #{price},
+		    </if>
+		    <if test="picture != null" >
+		        #{picture},
+		    </if>
+		    <if test="inventory != null" >
+		        #{inventory}
+		    </if>
+	    </trim>
+	</insert>
+  	<!-- 修改 -->
+	<update id="update"	parameterType="org.com.tianzmp.dto.ZhumpGoodsDTO">
+		update zhump_goods
+		<set>
+			<if test="name != null">
+				name = #{name},
+			</if>
+			<if test="price != null">
+				price = #{price},
+			</if>
+			<if test="picture != null">
+				picture = #{picture},
+			</if>
+			<if test="inventory != null">
+				inventory = #{inventory}
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<select id="pageInfoDTO" parameterType="org.com.tianzmp.dto.ZhumpGoodsDTO" resultMap="BaseResultMap">
+		select 
+		<include refid="Base_Column_List"/>
+		from
+		zhump_goods
+		 where 1 = 1
+		 limit #{start},#{rows}
+	</select>
+	
+	<select id="count" parameterType="org.com.tianzmp.dto.ZhumpGoodsDTO" resultType="java.lang.Integer">
+		select  count(1) from zhump_goods where 1 = 1
+	</select>
+
+	<!--增加库存-->
+	<update id="addGoodsNum" parameterType="map">
+		update zhump_goods set inventory = inventory + #{goodsNum} where id = #{id} and inventory &gt; 0
+	</update>
+
+	<!--减库存-->
+	<update id="reduceGoodsNum" parameterType="map">
+		update zhump_goods set inventory = inventory - #{goodsNum} where id = #{id} and inventory &gt; 0
+	</update>
+</mapper>
