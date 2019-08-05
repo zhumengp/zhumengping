@@ -2,8 +2,8 @@ package org.com.tianzmp.controller;
 
 import javax.annotation.Resource;
 
-import org.com.tianzmp.common.result.Result;
-import org.com.tianzmp.common.result.ResultStatus;
+import org.com.tianzmp.common.result.ZhumpResultBase;
+import org.com.tianzmp.common.result.ZhumpResultStatus;
 import org.com.tianzmp.dto.ZhumpAddressDTO;
 import org.com.tianzmp.service.ZhumpAddressService;
 import org.com.tianzmp.vo.ZhumpAddressVO;
@@ -38,13 +38,13 @@ public class ZhumpAddressController {
 	public Object list(ZhumpAddressDTO zhumpAddressDTO) {
 		try {
 			if(zhumpAddressDTO.getPage() == null) {
-				return new Result(ResultStatus.PARMSERROR, null);
+				return new ZhumpResultBase(ZhumpResultStatus.PARMSERROR, null);
 			}
 			List<ZhumpAddressVO> list = tianAddressService.findByUserAddress(zhumpAddressDTO);
-			return new Result(ResultStatus.SUCCESS, list);
+			return new ZhumpResultBase(ZhumpResultStatus.SUCCESS, list);
 		} catch (Exception e) {
 			log.error("系统异常",e);
-			return new Result(ResultStatus.ERROR, null);
+			return new ZhumpResultBase(ZhumpResultStatus.ERROR, null);
 		}
 	}
 	/**
@@ -69,13 +69,13 @@ public class ZhumpAddressController {
 					|| tianAddressDTO.getCity() == null
 					|| tianAddressDTO.getProvince() == null
 					|| tianAddressDTO.getPage() == null) {
-				return new Result(ResultStatus.PARMSERROR, null);
+				return new ZhumpResultBase(ZhumpResultStatus.PARMSERROR, null);
 			}
 			Boolean result = tianAddressService.insert(tianAddressDTO);
-			return new Result(ResultStatus.SUCCESS, result);
+			return new ZhumpResultBase(ZhumpResultStatus.SUCCESS, result);
 		} catch (Exception e) {
 			log.error("系统异常",e);
-			return new Result(ResultStatus.ERROR, null);
+			return new ZhumpResultBase(ZhumpResultStatus.ERROR, null);
 		}
 	}
 	
@@ -89,16 +89,16 @@ public class ZhumpAddressController {
 	public Object edit(ZhumpAddressDTO tianAddressDTO) {
 		try {
 			if(tianAddressDTO.getUserId() == null || tianAddressDTO.getId() == null) {
-				return new Result(ResultStatus.PARMSERROR, null);
+				return new ZhumpResultBase(ZhumpResultStatus.PARMSERROR, null);
 			}
 			boolean result = tianAddressService.update(tianAddressDTO);
 			if (!result){
-				return new Result(ResultStatus.FALI, null);
+				return new ZhumpResultBase(ZhumpResultStatus.FALI, null);
 			}
-			return new Result(ResultStatus.SUCCESS, null);
+			return new ZhumpResultBase(ZhumpResultStatus.SUCCESS, null);
 		} catch (Exception e) {
 			log.error("系统异常",e);
-			return new Result(ResultStatus.ERROR, null);
+			return new ZhumpResultBase(ZhumpResultStatus.ERROR, null);
 		}
 	}
 }

@@ -1,8 +1,8 @@
 package org.com.tianzmp.controller;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.com.tianzmp.common.result.Result;
-import org.com.tianzmp.common.result.ResultStatus;
+import org.com.tianzmp.common.result.ZhumpResultBase;
+import org.com.tianzmp.common.result.ZhumpResultStatus;
 import org.com.tianzmp.dto.ZhumpOrderDTO;
 import org.com.tianzmp.entity.response.ResponseOrderDetail;
 import org.com.tianzmp.entity.response.ResponseOrderDetail.ResponseOrderDetail_Item;
@@ -54,15 +54,15 @@ public class ZhumpOrderController {
         try {
             boolean result = tianOrderService.createOrder(userId,cartIds);
             if (!result){
-                return new Result(ResultStatus.FALI,null);
+                return new ZhumpResultBase(ZhumpResultStatus.FALI,null);
             }
-            return new Result(ResultStatus.SUCCESS,null);
+            return new ZhumpResultBase(ZhumpResultStatus.SUCCESS,null);
         } catch (Exception e) {
             log.error("系统异常",e);
             if (e instanceof BusinessException){
-                return new Result(ResultStatus.FALI,e.getMessage());
+                return new ZhumpResultBase(ZhumpResultStatus.FALI,e.getMessage());
             }
-            return new Result(ResultStatus.ERROR, null);
+            return new ZhumpResultBase(ZhumpResultStatus.ERROR, null);
         }
     }
 
@@ -76,13 +76,13 @@ public class ZhumpOrderController {
     @ResponseBody
     public Object detail(Long userId,Long id){
         if (userId == null || id == null){
-            return new Result(ResultStatus.PARMSERROR,null);
+            return new ZhumpResultBase(ZhumpResultStatus.PARMSERROR,null);
         }
       try {
           ZhumpOrderVO tianOrderVO = tianOrderService.findById(id);
-          if (tianOrderVO.getUserId().longValue() != userId.intValue()){
+          if (tianOrderVO == null || tianOrderVO.getUserId().longValue() != userId.intValue()){
               log.error("【订单详情】：发现查询订单的用户信息不匹配");
-              return new Result(ResultStatus.FALI,"用户id不匹配");
+              return new ZhumpResultBase(ZhumpResultStatus.FALI,"用户id不匹配");
           }
           ResponseOrderDetail responseOrderDetail = new ResponseOrderDetail();
           if (tianOrderVO != null) {
@@ -101,13 +101,13 @@ public class ZhumpOrderController {
                   list.add(responseOrderDetail_item);
               }
               responseOrderDetail.setOrderDetail(list);
-              return new Result(ResultStatus.SUCCESS,responseOrderDetail);
+              return new ZhumpResultBase(ZhumpResultStatus.SUCCESS,responseOrderDetail);
           }else{
-              return new Result(ResultStatus.FALI,null);
+              return new ZhumpResultBase(ZhumpResultStatus.FALI,null);
           }
       }catch (Exception e){
           log.error("系统异常",e);
-          return new Result(ResultStatus.ERROR,null);
+          return new ZhumpResultBase(ZhumpResultStatus.ERROR,null);
       }
     }
 
@@ -120,7 +120,7 @@ public class ZhumpOrderController {
     @ResponseBody
     public Object list(Long userId){
         if (userId == null){
-            return new Result(ResultStatus.PARMSERROR,null);
+            return new ZhumpResultBase(ZhumpResultStatus.PARMSERROR,null);
         }
         try {
             ZhumpOrderDTO tianOrderDTO = new ZhumpOrderDTO();
@@ -147,12 +147,12 @@ public class ZhumpOrderController {
                     }
                     list.add(responseOrderDetail);
                 }
-                return new Result(ResultStatus.SUCCESS,list);
+                return new ZhumpResultBase(ZhumpResultStatus.SUCCESS,list);
             }
-            return new Result(ResultStatus.FALI,null);
+            return new ZhumpResultBase(ZhumpResultStatus.FALI,null);
         }catch (Exception e){
             log.error("系统异常",e);
-            return new Result(ResultStatus.ERROR,null);
+            return new ZhumpResultBase(ZhumpResultStatus.ERROR,null);
         }
     }
 
@@ -165,12 +165,12 @@ public class ZhumpOrderController {
         try {
             boolean falg = tianOrderService.cancelOrder(id);
             if (!falg){
-                return new Result(ResultStatus.FALI,null);
+                return new ZhumpResultBase(ZhumpResultStatus.FALI,null);
             }
-            return new Result(ResultStatus.SUCCESS,null);
+            return new ZhumpResultBase(ZhumpResultStatus.SUCCESS,null);
         }catch (Exception e){
             log.error("系统异常",e);
-            return new Result(ResultStatus.ERROR,null);
+            return new ZhumpResultBase(ZhumpResultStatus.ERROR,null);
         }
     }
 
@@ -183,12 +183,12 @@ public class ZhumpOrderController {
         try {
             boolean falg = tianOrderService.deleteOrder(id);
             if (!falg){
-                return new Result(ResultStatus.FALI,null);
+                return new ZhumpResultBase(ZhumpResultStatus.FALI,null);
             }
-            return new Result(ResultStatus.SUCCESS,null);
+            return new ZhumpResultBase(ZhumpResultStatus.SUCCESS,null);
         }catch (Exception e){
             log.error("系统异常",e);
-            return new Result(ResultStatus.ERROR,null);
+            return new ZhumpResultBase(ZhumpResultStatus.ERROR,null);
         }
     }
 }

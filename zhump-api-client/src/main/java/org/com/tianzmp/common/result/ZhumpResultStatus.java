@@ -1,6 +1,6 @@
 package org.com.tianzmp.common.result;
 
-public enum ResultStatus {
+public enum ZhumpResultStatus {
 	/************系统状态码**************/
 	/**操作成功*/
 	SUCCESS("000001","操作成功"),
@@ -8,22 +8,22 @@ public enum ResultStatus {
 	FALI("000002","操作失败"),
 	/**系统异常*/
 	ERROR("000003","系统异常"),
-	
-	
-	
+
+
+
 	/****************业务状态码********************/
 	/**参数模块异常码*/
 	PARMSERROR("000400","参数错误")
 
 	;
-	
-	private ResultStatus(String code, String message) {
+
+	private ZhumpResultStatus(String code, String message) {
 		this.code = code;
 		this.message = message;
 	}
 
 	private String code;
-	
+
 	private String message;
 
 	public String getCode() {
@@ -42,8 +42,8 @@ public enum ResultStatus {
 		this.message = message;
 	}
 
-	
-	
-	
+
+
+
 
 }

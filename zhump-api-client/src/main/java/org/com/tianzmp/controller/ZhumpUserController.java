@@ -2,8 +2,8 @@ package org.com.tianzmp.controller;
 
 import javax.annotation.Resource;
 
-import org.com.tianzmp.common.result.Result;
-import org.com.tianzmp.common.result.ResultStatus;
+import org.com.tianzmp.common.result.ZhumpResultBase;
+import org.com.tianzmp.common.result.ZhumpResultStatus;
 import org.com.tianzmp.dto.ZhumpAddressDTO;
 import org.com.tianzmp.dto.ZhumpUserDTO;
 import org.com.tianzmp.exception.BusinessException;
@@ -30,10 +30,10 @@ public class ZhumpUserController {
 	public Object info(Long id) {
 		try {
 			ZhumpUserVO tianUsre = tianUserService.findById(id);
-			return new Result(ResultStatus.SUCCESS,tianUsre);
+			return new ZhumpResultBase(ZhumpResultStatus.SUCCESS,tianUsre);
 		} catch (Exception e) {
 			log.error("系统异常",e);
-			return new Result(ResultStatus.ERROR, null);
+			return new ZhumpResultBase(ZhumpResultStatus.ERROR, null);
 		}
 	}
 
@@ -52,13 +52,13 @@ public class ZhumpUserController {
 			tianAddressDTO.setProvince("是的");
 			tianAddressDTO.setAddress("123");
 			boolean save = tianUserService.insertUserToAddress(tianUserDTO,tianAddressDTO);
-			return new Result(ResultStatus.SUCCESS,save);
+			return new ZhumpResultBase(ZhumpResultStatus.SUCCESS,save);
 		} catch (Exception e) {
 			log.error("系统异常",e);
 			if (e instanceof BusinessException){
-				return new Result(ResultStatus.FALI,e.getMessage());
+				return new ZhumpResultBase(ZhumpResultStatus.FALI,e.getMessage());
 			}
-			return new Result(ResultStatus.ERROR, null);
+			return new ZhumpResultBase(ZhumpResultStatus.ERROR, null);
 		}
 	}
 

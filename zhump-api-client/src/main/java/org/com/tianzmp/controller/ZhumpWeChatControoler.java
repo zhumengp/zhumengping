@@ -1,8 +1,8 @@
 package org.com.tianzmp.controller;
 
 import com.alibaba.dubbo.common.utils.StringUtils;
-import org.com.tianzmp.common.result.Result;
-import org.com.tianzmp.common.result.ResultStatus;
+import org.com.tianzmp.common.result.ZhumpResultBase;
+import org.com.tianzmp.common.result.ZhumpResultStatus;
 import org.com.tianzmp.dto.ZhumpAddressDTO;
 import org.com.tianzmp.dto.ZhumpUserDTO;
 import org.com.tianzmp.entity.response.ResponseWeChatUserInfo;
@@ -32,17 +32,17 @@ import java.net.URLEncoder;
 @Controller
 @RequestMapping(value="weChat")
 public class ZhumpWeChatControoler {
-	
+
 	private final Logger log = LoggerFactory.getLogger(ZhumpWeChatControoler.class);
-	
+
 	@Resource(name="tianUserService")
 	private ZhumpUserService tianUserService;
-	
-	
+
+
 	@Autowired
 	WxUtils wxUtils;
-	
-	
+
+
 	/***
 	 * 微信获取code
 	 */
@@ -57,14 +57,14 @@ public class ZhumpWeChatControoler {
 					+ "&response_type=code"
 					+ "&scope=snsapi_userinfo"
 					+ "&state=STATE#wechat_redirect";
-			return new Result(ResultStatus.SUCCESS, url);
+			return new ZhumpResultBase(ZhumpResultStatus.SUCCESS, url);
 		} catch (Exception e) {
 			log.error("获取回调地址异常",e);
-			return new Result(ResultStatus.ERROR, null);
+			return new ZhumpResultBase(ZhumpResultStatus.ERROR, null);
 		}
 	}
-	
-	
+
+
 	/**
 	 * 根据code获取用户信息
 	 */
@@ -72,7 +72,7 @@ public class ZhumpWeChatControoler {
 	@ResponseBody
 	public Object getUserInfo(String code) {
 		if(StringUtils.isBlank(code)) {
-			return new Result(ResultStatus.PARMSERROR, null);
+			return new ZhumpResultBase(ZhumpResultStatus.PARMSERROR, null);
 		}
 		try {
 			WeChatUserInfo weChatUserInfo = wxUtils.getWeChatAuthO2UserInfo(WxConstant.APP_ID, WxConstant.APPSECRET, code);
@@ -89,15 +89,15 @@ public class ZhumpWeChatControoler {
 			boolean save = tianUserService.insertUserToAddress(tianUserDTO,tianAddressDTO);
 			BeanUtils.copyProperties(tianUserDTO, responseWeChatUserInfo);
 			if(save) {
-				return new Result(ResultStatus.SUCCESS, responseWeChatUserInfo);
+				return new ZhumpResultBase(ZhumpResultStatus.SUCCESS, responseWeChatUserInfo);
 			}
-			return new Result(ResultStatus.FALI, null);
+			return new ZhumpResultBase(ZhumpResultStatus.FALI, null);
 		} catch (Exception e) {
 			log.error("系统异常",e);
 			if (e instanceof BusinessException){
-				return new Result(ResultStatus.FALI, e.getMessage());
+				return new ZhumpResultBase(ZhumpResultStatus.FALI, e.getMessage());
 			}
-			return new Result(ResultStatus.ERROR, null);
+			return new ZhumpResultBase(ZhumpResultStatus.ERROR, null);
 		}
 	}
 	/**

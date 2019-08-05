@@ -1,7 +1,7 @@
 package org.com.tianzmp.controller;
 
-import org.com.tianzmp.common.result.Result;
-import org.com.tianzmp.common.result.ResultStatus;
+import org.com.tianzmp.common.result.ZhumpResultBase;
+import org.com.tianzmp.common.result.ZhumpResultStatus;
 import org.com.tianzmp.service.impl.ZhumpChannelServiceImpl;
 import org.com.tianzmp.vo.ZhumpChannelVO;
 import org.slf4j.Logger;
@@ -32,10 +32,10 @@ public class ZhumpChannelController {
     public Object list(){
         try {
             List<ZhumpChannelVO> zhumpChannelVOS = tianChannelService.selectAll();
-            return new Result(ResultStatus.SUCCESS,zhumpChannelVOS);
+            return new ZhumpResultBase(ZhumpResultStatus.SUCCESS,zhumpChannelVOS);
         } catch (Exception e) {
             log.error("系统异常",e);
-            return new Result(ResultStatus.ERROR,null);
+            return new ZhumpResultBase(ZhumpResultStatus.ERROR,null);
         }
     }
 }

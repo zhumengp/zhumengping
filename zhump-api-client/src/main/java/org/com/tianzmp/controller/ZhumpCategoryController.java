@@ -4,8 +4,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.com.tianzmp.common.result.Result;
-import org.com.tianzmp.common.result.ResultStatus;
+import org.com.tianzmp.common.result.ZhumpResultBase;
+import org.com.tianzmp.common.result.ZhumpResultStatus;
 import org.com.tianzmp.service.ZhumpCategoryService;
 import org.com.tianzmp.vo.ZhumpCategoryVO;
 import org.slf4j.Logger;
@@ -34,13 +34,13 @@ public class ZhumpCategoryController {
 		try {
 			boolean result = tianCategoryService.save(pId,name,status);
 			if(result) {
-				return new Result(ResultStatus.SUCCESS, true);
+				return new ZhumpResultBase(ZhumpResultStatus.SUCCESS, true);
 			}else {
-				return new Result(ResultStatus.FALI, false);
+				return new ZhumpResultBase(ZhumpResultStatus.FALI, false);
 			}
 		} catch (Exception e) {
 			log.error("系统异常",e);
-			return new Result(ResultStatus.ERROR, null);
+			return new ZhumpResultBase(ZhumpResultStatus.ERROR, null);
 		}
 	}
 	
@@ -49,10 +49,10 @@ public class ZhumpCategoryController {
 	public Object list() {
 		try {
 			List<ZhumpCategoryVO> list = tianCategoryService.findByPid();
-			return new Result(ResultStatus.SUCCESS, list);
+			return new ZhumpResultBase(ZhumpResultStatus.SUCCESS, list);
 		} catch (Exception e) {
 			log.error("系统异常",e);
-			return new Result(ResultStatus.ERROR, null);
+			return new ZhumpResultBase(ZhumpResultStatus.ERROR, null);
 		}
 	}
 }

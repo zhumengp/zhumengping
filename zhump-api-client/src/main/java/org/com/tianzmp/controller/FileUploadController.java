@@ -5,8 +5,8 @@ import java.io.FileOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.com.tianzmp.common.result.Result;
-import org.com.tianzmp.common.result.ResultStatus;
+import org.com.tianzmp.common.result.ZhumpResultBase;
+import org.com.tianzmp.common.result.ZhumpResultStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -49,10 +49,10 @@ public class FileUploadController {
              out.write(file.getBytes());
              out.flush();
              out.close();
-             return new Result(ResultStatus.SUCCESS,upload);
+             return new ZhumpResultBase(ZhumpResultStatus.SUCCESS,upload);
         } catch (Exception e) {
              log.error("系统异常", e);
-             return new Result(ResultStatus.ERROR,null);
+             return new ZhumpResultBase(ZhumpResultStatus.ERROR,null);
         }
      }
 }

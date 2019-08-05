@@ -1,7 +1,7 @@
 package org.com.tianzmp.controller;
 
-import org.com.tianzmp.common.result.Result;
-import org.com.tianzmp.common.result.ResultStatus;
+import org.com.tianzmp.common.result.ZhumpResultBase;
+import org.com.tianzmp.common.result.ZhumpResultStatus;
 import org.com.tianzmp.service.ZhumpBannerService;
 import org.com.tianzmp.vo.ZhumpBannerVO;
 import org.slf4j.Logger;
@@ -35,10 +35,10 @@ public class ZhumpBannerController {
     public Object list(){
         try {
             List<ZhumpBannerVO> tianBannerVOS = tianBannerService.selectAll();
-            return new Result(ResultStatus.SUCCESS,tianBannerVOS);
+            return new ZhumpResultBase(ZhumpResultStatus.SUCCESS,tianBannerVOS);
         } catch (Exception e) {
             log.error("系统异常",e);
-            return new Result(ResultStatus.ERROR,null);
+            return new ZhumpResultBase(ZhumpResultStatus.ERROR,null);
         }
     }
 }

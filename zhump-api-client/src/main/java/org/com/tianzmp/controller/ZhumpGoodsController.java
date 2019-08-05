@@ -3,8 +3,8 @@ package org.com.tianzmp.controller;
 import javax.annotation.Resource;
 
 import org.com.tianzmp.base.PageInfo;
-import org.com.tianzmp.common.result.Result;
-import org.com.tianzmp.common.result.ResultStatus;
+import org.com.tianzmp.common.result.ZhumpResultBase;
+import org.com.tianzmp.common.result.ZhumpResultStatus;
 import org.com.tianzmp.dto.ZhumpGoodsDTO;
 import org.com.tianzmp.service.ZhumpGoodsService;
 import org.com.tianzmp.vo.ZhumpGoodsVO;
@@ -38,13 +38,13 @@ public class ZhumpGoodsController {
 
 		try {
 			if(zhumpGoodsDTO.getPage() == null) {
-				return new Result(ResultStatus.PARMSERROR, null);
+				return new ZhumpResultBase(ZhumpResultStatus.PARMSERROR, null);
 			}
 			PageInfo<ZhumpGoodsVO> list = tianGoodsService.pageInfoDTO(zhumpGoodsDTO);
-			return new Result(ResultStatus.SUCCESS, list);
+			return new ZhumpResultBase(ZhumpResultStatus.SUCCESS, list);
 		} catch (Exception e) {
 			log.error("系统异常",e);
-			return new Result(ResultStatus.ERROR, null);
+			return new ZhumpResultBase(ZhumpResultStatus.ERROR, null);
 		}
 	}
 	
@@ -68,13 +68,13 @@ public class ZhumpGoodsController {
 	public Object insert(ZhumpGoodsDTO tianGoodsDTO) {
 		try {
 			if(tianGoodsDTO.getName() == null || tianGoodsDTO.getPrice() == null || tianGoodsDTO.getInventory() == null || tianGoodsDTO.getPage() == null) {
-				return new Result(ResultStatus.PARMSERROR, null);
+				return new ZhumpResultBase(ZhumpResultStatus.PARMSERROR, null);
 			}
 			Boolean result = tianGoodsService.insert(tianGoodsDTO);
-			return new Result(ResultStatus.SUCCESS, result);
+			return new ZhumpResultBase(ZhumpResultStatus.SUCCESS, result);
 		} catch (Exception e) {
 			log.error("系统异常",e);
-			return new Result(ResultStatus.ERROR, null);
+			return new ZhumpResultBase(ZhumpResultStatus.ERROR, null);
 		}
 	}
 	
@@ -83,13 +83,13 @@ public class ZhumpGoodsController {
 	public Object info(Long id) {
 		try {
 			if(id == null) {
-				return new Result(ResultStatus.PARMSERROR, null);
+				return new ZhumpResultBase(ZhumpResultStatus.PARMSERROR, null);
 			}
 			ZhumpGoodsVO tianGoodsVO = tianGoodsService.findById(id);
-			return new Result(ResultStatus.SUCCESS, tianGoodsVO);
+			return new ZhumpResultBase(ZhumpResultStatus.SUCCESS, tianGoodsVO);
 		} catch (Exception e) {
 			log.error("系统异常",e);
-			return new Result(ResultStatus.ERROR, null);
+			return new ZhumpResultBase(ZhumpResultStatus.ERROR, null);
 		}
 	}
 	

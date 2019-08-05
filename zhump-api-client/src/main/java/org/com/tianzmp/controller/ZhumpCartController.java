@@ -5,8 +5,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.com.tianzmp.common.result.Result;
-import org.com.tianzmp.common.result.ResultStatus;
+import org.com.tianzmp.common.result.ZhumpResultBase;
+import org.com.tianzmp.common.result.ZhumpResultStatus;
 import org.com.tianzmp.dto.ZhumpCartDTO;
 import org.com.tianzmp.service.ZhumpCartService;
 import org.com.tianzmp.vo.ZhumpCartVO;
@@ -40,18 +40,18 @@ public class ZhumpCartController {
 	@ResponseBody
 	public Object insert(Long user_id,Long goodsId,Integer goodsNum) {
 		if (user_id == null || goodsId == null || goodsNum == null){
-			return new Result(ResultStatus.PARMSERROR,null);
+			return new ZhumpResultBase(ZhumpResultStatus.PARMSERROR,null);
 		}
 		try {
 			boolean addCart = tianCartService.save(user_id,goodsId, goodsNum);
 			if(addCart) {
-				return new Result(ResultStatus.SUCCESS, null);
+				return new ZhumpResultBase(ZhumpResultStatus.SUCCESS, null);
 			}else {
-				return new Result(ResultStatus.FALI, null);
+				return new ZhumpResultBase(ZhumpResultStatus.FALI, null);
 			}
 		} catch (Exception e) {
 			log.error("系统异常",e);
-			return new Result(ResultStatus.ERROR, null);
+			return new ZhumpResultBase(ZhumpResultStatus.ERROR, null);
 		}
 	}
 	/**
@@ -63,7 +63,7 @@ public class ZhumpCartController {
 		try {
 			ZhumpCartDTO tianCartDTO = new ZhumpCartDTO();
 			if(page == null || user_id == null) {
-				return new Result(ResultStatus.PARMSERROR, null);
+				return new ZhumpResultBase(ZhumpResultStatus.PARMSERROR, null);
 			}
 			tianCartDTO.setUserId(user_id);
 			tianCartDTO.setPage(page);
@@ -71,10 +71,10 @@ public class ZhumpCartController {
 				tianCartDTO.setRows(rows);
 			}
 			List<ZhumpCartVO> list = tianCartService.pageInfoDTO(tianCartDTO);
-			return new Result(ResultStatus.SUCCESS, list);
+			return new ZhumpResultBase(ZhumpResultStatus.SUCCESS, list);
 		} catch (Exception e) {
 			log.error("系统异常",e);
-			return new Result(ResultStatus.ERROR, null);
+			return new ZhumpResultBase(ZhumpResultStatus.ERROR, null);
 		}
 	}
 }
